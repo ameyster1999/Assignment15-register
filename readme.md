@@ -75,4 +75,6 @@ Example:
 ```bash
 curl -X POST http://localhost:8080/resend-invitation-code -d '{"username":"exampleuser"}'
 ```
+er diagram:
 
+![Screenshot 2024-04-03 at 23.46.48.png](..%2FDesktop%2FScreenshot%202024-04-03%20at%2023.46.48.png)
