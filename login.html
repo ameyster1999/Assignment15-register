@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+</head>
+<body>
+<h1>User Management</h1>
+
+<h2>Login</h2>
+<form id="loginForm">
+    <label for="loginUsername">Username:</label><br>
+    <input type="text" id="loginUsername" name="username"><br><br>
+
+    <label for="loginPassword">Password:</label><br>
+    <input type="password" id="loginPassword" name="password"><br><br>
+
+    <input type="submit" value="Login">
+</form>
+
+<hr>
+
+<h2>Generate Invitation Code</h2>
+<form id="generateCodeForm">
+    <input type="submit" value="Generate Code">
+</form>
+
+<hr>
+
+<h2>Resend Invitation Code</h2>
+<form id="resendCodeForm">
+    <label for="resendUsername">Username:</label><br>
+    <input type="text" id="resendUsername" name="username"><br><br>
+
+    <input type="submit" value="Resend Code">
+</form>
+
+<div id="message"></div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var formData = new FormData(this);
+
+        fetch('/login', {
+            method: 'POST',
+            body: JSON.stringify({
+                username: formData.get('username'),
+                password: formData.get('password')
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('message').textContent = "Login successful!";
+                } else {
+                    document.getElementById('message').textContent = "Login failed. Please check your username and password.";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('message').textContent = "An error occurred. Please try again later.";
+            });
+    });
+
+    document.getElementById('generateCodeForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        fetch('/generate-code', {
+            method: 'POST'
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('message').textContent = "Invitation code generated: " + data.code;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('message').textContent = "An error occurred. Please try again later.";
+            });
+    });
+
+    document.getElementById('resendCodeForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var formData = new FormData(this);
+
+        fetch('/resend-invitation-code', {
+            method: 'POST',
+            body: JSON.stringify(formData.get('username')),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('message').textContent = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('message').textContent = "An error occurred. Please try again later.";
+            });
+    });
+</script>
+</body>
+</html>

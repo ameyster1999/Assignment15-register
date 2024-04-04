@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+</head>
+<body>
+<h1>User Registration</h1>
+<form id="registrationForm">
+    <label for="username">Username:</label><br>
+    <input type="text" id="username" name="username"><br><br>
+
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password"><br><br>
+
+    <label for="invitation_code">Invitation Code:</label><br>
+    <input type="text" id="invitation_code" name="invitation_code"><br><br>
+
+    <input type="submit" value="Register">
+</form>
+
+<div id="message"></div>
+
+<script>
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var formData = new FormData(this);
+
+        fetch('/register', {
+            method: 'POST',
+            body: JSON.stringify({
+                username: formData.get('username'),
+                password: formData.get('password'),
+                invitation_code: formData.get('invitation_code')
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('message').textContent = data.message;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+</body>
+</html>
